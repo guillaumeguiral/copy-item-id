@@ -1,3 +1,5 @@
+local addonName = ...
+
 -- Binding descriptions (must be global for WoW keybinding UI)
 BINDING_HEADER_COPY_ITEM_ID_HEADER = "Copy Item Id"
 BINDING_NAME_COPY_ITEM_ID = "Copy Item ID"
@@ -49,27 +51,49 @@ function CopyItemId_Run()
     end
 end
 
+local function EnsureDefaultBinding(bindingName, defaultKey)
+    local bind1, bind2 = GetBindingKey(bindingName)
+    local action = GetBindingAction(defaultKey)
+
+    -- Only set the default when the addon action is unbound
+    -- and the target key is currently unused.
+    if bind1 == nil and bind2 == nil and action == "" then
+        SetBinding(defaultKey, bindingName)
+        return true
+    end
+
+    return false
+end
+
 -- Default binding setup
 local frame = CreateFrame("Frame")
 frame:RegisterEvent("ADDON_LOADED")
 frame:RegisterEvent("PLAYER_LOGIN")
 
 frame:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" and arg1 == "CopyItemId" then
+    if event == "ADDON_LOADED" and arg1 == addonName then
         if CopyItemIdDB == nil then
             CopyItemIdDB = {}
         end
     elseif event == "PLAYER_LOGIN" then
-        if CopyItemIdDB.default_bindings_set == nil then
-            local bind1, bind2 = GetBindingKey("COPY_ITEM_ID")
-            local action = GetBindingAction("CTRL-C")
+        if CopyItemIdDB == nil then
+            CopyItemIdDB = {}
+        end
 
-            if bind1 == nil and bind2 == nil and action == "" then
-                SetBinding("CTRL-C", "COPY_ITEM_ID")
+        local bind1, bind2 = GetBindingKey("COPY_ITEM_ID")
+        local hasBinding = bind1 ~= nil or bind2 ~= nil
+
+        if CopyItemIdDB.default_bindings_set == nil or not hasBinding then
+            local didSet = EnsureDefaultBinding("COPY_ITEM_ID", "CTRL-C")
+            if didSet then
+                SaveBindings(GetCurrentBindingSet())
             end
 
-            SaveBindings(GetCurrentBindingSet())
-            CopyItemIdDB.default_bindings_set = true
+            -- Mark setup as complete only once the action has a keybind.
+            bind1, bind2 = GetBindingKey("COPY_ITEM_ID")
+            if bind1 ~= nil or bind2 ~= nil then
+                CopyItemIdDB.default_bindings_set = true
+            end
         end
 
         self:UnregisterEvent("PLAYER_LOGIN")
