@@ -1,0 +1,9 @@
+## Interface: 120001
+## Version: 1.0.0
+## Title: Copy Item Id
+## Notes: Mouse over an item and press Ctrl+C to copy its Item ID.
+## Author: Guilvor
+## SavedVariables: CopyItemIdDB
+
+Bindings.xml
+CopyItemId.lua

@@ -1,0 +1,3 @@
+<Bindings>
+    <Binding name="COPY_ITEM_ID" header="COPY_ITEM_ID_HEADER" category="ADDONS">CopyItemId_Run()</Binding>
+</Bindings>
