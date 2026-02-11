@@ -3,7 +3,11 @@
 ## Title: Copy Item Id
 ## Notes: Mouse over an item and press Ctrl+C to copy its Item ID.
 ## Author: Guilvor
+## IconTexture: Interface\Icons\INV_Misc_Punchcards_Yellow
 ## SavedVariables: CopyItemIdDB
+## X-Website: https://www.curseforge.com/wow/addons/copyitemid
+## X-Curse-Project-ID: 0
+## X-Category: Miscellaneous
 
 Bindings.xml
 CopyItemId.lua
